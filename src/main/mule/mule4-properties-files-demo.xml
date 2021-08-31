@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="f4b2244f-9b9a-495a-bb6d-2c099f52207a" file="${env}-properties.yaml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="142ee812-8335-4463-b198-87cf6d1c1261" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<flow name="mule4-properties-files-demo-flow" doc:id="7777d069-6e07-4740-b020-01ad386e505b" >
+		<http:listener doc:name="Listener" doc:id="bde38bae-a9fc-4c8a-b134-e5df7b4d666b" config-ref="HTTP_Listener_config" path="${http.path}"/>
+		<set-variable value="#[p('env')]" doc:name="Store Env Value" doc:id="484114ef-9700-43b6-bbaf-19b67992bd10" variableName="env"/>
+		<choice doc:name="Choice" doc:id="f02048be-e957-4036-975f-17ddc8400f0b" >
+			<when expression="#[vars.env == 'dev']">
+				<logger level="INFO" doc:name="Log DEV Properties" doc:id="43f112ae-c959-4932-a656-418e2f027af3" message="#[output application/json --- {&#10;	host: p('http.host'),&#10;	port: p('http.port'),&#10;	env:  p('env.name')&#10;}]"/>
+			</when>
+			<when expression="#[vars.env == 'sit']">
+				<logger level="INFO" doc:name="Log SIT Properties" doc:id="12f744e6-f6e8-4ec8-8875-c7596b1d5ce8" message="#[output application/json --- {&#10;	host: p('http.host'),&#10;	port: p('http.port'),&#10;	env:  p('env.name')&#10;}]"/>
+			</when>
+			<when expression="#[vars.env == 'uat']">
+				<logger level="INFO" doc:name="Log UAT Properties" doc:id="442aa1f1-6138-405d-9d65-f1096380eb36" message="#[output application/json --- {&#10;	host: p('http.host'),&#10;	port: p('http.port'),&#10;	env:  p('env.name')&#10;}]"/>
+			</when>
+			<when expression="#[vars.env == 'prod']">
+				<logger level="INFO" doc:name="Log PROD Properties" doc:id="cc28942a-7023-4990-96fb-c783b736b762" message="#[output application/json --- {&#10;	host: p('http.host'),&#10;	port: p('http.port'),&#10;	env:  p('env.name')&#10;}]"/>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Log Invalid Env" doc:id="3a1c196c-c8b1-44eb-a051-fa504b634463" message='#["Invalid Environment"]'/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
